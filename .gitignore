@@ -26,3 +26,9 @@ node_modules
 
 # Users Environment Variables
 .lock-wscript
+
+# env config
+config/env-config.coffee
+
+# IDE junk
+.idea
