@@ -1,4 +1,5 @@
-envConfig = require("#{__dirname}/../../config/env-config")
+path = require('path')
+envConfig = require(path.resolve(__dirname, '../../config/env-config'))
 request   = require('request')
 
 
