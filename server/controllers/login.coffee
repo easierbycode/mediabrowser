@@ -1,4 +1,4 @@
-envConfig = require('../../config/env-config')
+envConfig = require("#{__dirname}/../../config/env-config")
 request   = require('request')
 
 

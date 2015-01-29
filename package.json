@@ -16,5 +16,8 @@
     "request": "~2.34.0",
     "require-directory": "^2.0.0",
     "serve-favicon": "~2.2.0"
+  },
+  "engines": {
+    "node": "0.10.x"
   }
 }
