@@ -1,0 +1,6 @@
+.modal-header(style='color:#333')
+  button.close(ng-click='$close()') &times;
+  h3.modal-title Download
+
+.modal-body
+  a(href="#{url}", download='') #{title} (#{resolution}, #{size})

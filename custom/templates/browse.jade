@@ -1,0 +1,86 @@
+.container(ng-swipe-right='goBack()')
+  div(breadcrumb='')
+  .row
+    .containerName(ng-bind='containerTitle')
+  // thumbnail view
+  .row.gridView(ng-if='thubmnailView', infinite-scroll='browse.loadMoreItems()', infinite-scroll-distance='2', infinite-scroll-disabled='browse.busy', infinite-scroll-immediate-check='true')
+    .col-xs-6.col-sm-2.col-md-2.col-lg-2(ng-repeat='item in browse.items', ng-init="isContainer = item.type === 'CONTAINER'", scroll-to-last-viewed-item='{{lastPlayedItemId === item.uniqueId}}', notify-scroller='')
+      .thumbnail
+        .clickable(ng-click='objectAction(isContainer, item.id, item.uniqueId, item.title, breadcrumbUrlParams)')
+          .thumbnailImgContainer
+            img(src='assets/img/thumbnail-shape.png')
+            div(ng-class="{'missingThubmnail': !item.thumbnailUrl, 'thumbnailImg': true, 'thumbnailImgFadeIn' : true}", ng-show='!item.thumbnailUrl || item.thumbnailLoaded', ng-style="{'background': 'url(\\'{{item.thumbnailUrl | missingThumbnail:item.fileType:isContainer | absoluteUrl}}\\') no-repeat center center'}")
+            .folderOverlay(ng-show='isContainer')
+            .downloadButton(ng-click='showDownloadModal(item.id)', ng-show='!isContainer', dont-propagate-click='')
+              i.glyphicon.glyphicon-arrow-down
+            .addButton(ng-show='!isContainer', ng-click='addToQueue(item.id)', dont-propagate-click='')
+        .caption
+          .thumbnailMainTitle(ellipsis='{{item.title}}')
+          .thumbnailSubTitle(ng-show="!isContainer && item.fileType === 'AUDIO'") {{item.album}}
+          .thumbnailSubSubTitle(ng-show='!isContainer') {{item.duration | timeStringShort}}
+    div(style="'clear:")
+  // list view
+  div(ng-if='!thubmnailView', ng-class="{'row listView' : true, 'audioListTable' : isAudio, 'videoListTable' : isVideo, 'imageListTable' : isImage}", infinite-scroll='browse.loadMoreItems()', infinite-scroll-distance='2', infinite-scroll-disabled='browse.busy', ng-init="isAudio = containerFileType === 'A'; isVideo = containerFileType === 'V'; isImage = containerFileType === 'I'")
+    table.table.table-striped
+      thead
+        tr.hidden-xs(ng-if='isAudio')
+          th.albumArt
+          th.title Title
+          th.duration Duration
+          th.album Album
+          th.artist Artist
+          th.controls
+        tr.hidden-xs(ng-if='isVideo')
+          th.albumArt
+          th.title Title
+          th.duration Duration
+          th.genre Genre
+          th.rating Rating
+          th.year Year
+          th.controls
+        tr.hidden-xs(ng-if='isImage')
+          th.albumArt
+          th.title Title
+          th.date Date
+          th.controls
+      tbody
+        tr(ng-repeat='item in browse.items', ng-init="isContainer = item.type === 'CONTAINER'", scroll-to-last-viewed-item='{{lastPlayedItemId === item.uniqueId}}', notify-scroller='')
+          td.albumArt
+            .thumbnailImgContainer.clickable(ng-click='objectAction(isContainer, item.id, item.uniqueId, item.title, breadcrumbUrlParams)')
+              img(src='assets/img/thumbnail-shape.png')
+              div(ng-class="{'missingThubmnail': !item.thumbnailUrl, 'thumbnailImg': true, 'thumbnailImgFadeIn' : true}", ng-show='!item.thumbnailUrl || item.thumbnailLoaded', ng-style="{'background': 'url(\\'{{item.thumbnailUrl | missingThumbnail:item.fileType:isContainer | absoluteUrl}}\\') no-repeat center center'}")
+              .folderOverlay(ng-show='isContainer')
+          // audio
+          td.title.hidden-xs.clickable(ng-if='isAudio', ng-click='objectAction(isContainer, item.id, item.uniqueId, item.title, breadcrumbUrlParams)')
+            div(ng-class="{'twoLines':true, 'folderTitle': isContainer}") {{item.title}}
+          td.titleArtist.visible-xs.clickable(ng-if='isAudio', ng-click='objectAction(isContainer, item.id, item.uniqueId, item.title, breadcrumbUrlParams)')
+            div(ng-class="{'folderTitle': isContainer}")
+              audio-title-in-list-view
+          td.duration.hidden-xs(ng-if='isAudio') {{item.duration | timeStringShort}}
+          td.album.hidden-xs(ng-if='isAudio')
+            .twoLines {{item.album}}
+          td.artist.hidden-xs(ng-if='isAudio')
+            .twoLines {{item.artist}}
+          // video
+          td.title.hidden-xs.clickable(ng-if='isVideo', ng-click='objectAction(isContainer, item.id, item.uniqueId, item.title, breadcrumbUrlParams)')
+            div(ng-class="{'twoLines':true, 'folderTitle': isContainer}") {{item.title}}
+          td.titleArtist.visible-xs.clickable(ng-if='isVideo', ng-click='objectAction(isContainer, item.id,item.uniqueId, item.title, breadcrumbUrlParams)')
+            div(ng-class="{'folderTitle': isContainer}")
+              | {{item.title}}
+              span(ng-if='!isContainer')
+                span.secondary  - {{item.duration | timeStringShort}}
+          td.duration.hidden-xs(ng-if='isVideo') {{item.duration | timeStringShort}}
+          td.genre.hidden-xs(ng-if='isVideo') {{item.genre}}
+          td.rating.hidden-xs(ng-if='isVideo') {{item.rating}}
+          td.year.hidden-xs(ng-if='isVideo') {{item.date | date:'yyyy'}}
+          // image
+          td.title.hidden-xs.clickable(ng-if='isImage', ng-click='objectAction(isContainer, item.id, item.uniqueId, item.title, breadcrumbUrlParams)')
+            div(ng-class="{'twoLines':true, 'folderTitle': isContainer}") {{item.title}}
+          td.titleArtist.visible-xs.clickable(ng-if='isImage', ng-click='objectAction(isContainer, item.id, item.uniqueId, item.title, breadcrumbUrlParams)')
+            div(ng-class="{'folderTitle': isContainer}")
+              | {{item.title}}
+              span(ng-if='!isContainer')
+                span.secondary  - {{item.date}}
+          td.date.hidden-xs(ng-if='isImage') {{item.date}}
+          td.controls
+            div(ng-class="isContainer? 'hiddenButton' : 'addButton clickable'", ng-click='!isContainer ? addToQueue(item.id) : true')

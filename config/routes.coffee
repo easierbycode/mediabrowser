@@ -18,3 +18,8 @@ module.exports = (router) ->
 
   router.route('/cds/login')
     .post(c.login)
+
+  router.route('/')
+    .get ( req, res ) ->
+      res.sendFile 'custom.html',
+        root  : "#{__dirname}/../public/custom"
