@@ -19,6 +19,9 @@ module.exports = (router) ->
   router.route('/cds/login')
     .post(c.login)
 
+  router.route('/cds/fp')
+    .get(c.fp)
+
   router.route('/')
     .get ( req, res ) ->
       res.sendFile 'custom.html',
